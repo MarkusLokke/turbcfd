@@ -3,10 +3,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def read_yLineUdata(path):
+def read_U_file(path):
     """
     _summary_
-        The function reads yLine_U_non_uniform.xy file and outputs y, U1, U2, from a given "path"
+        The function reads U file and outputs U1(y), U2(y), from a given "path"
     _Arguments_
         Inputs:
             path    : input file path  (str)
@@ -15,9 +15,4 @@ def read_yLineUdata(path):
             U1      : U1-output value  (npArray)
             U2      : U2-output value  (npArray)
     """
-    # Reading yLine_U_non_uniform.xy
-    data = np.loadtxt(path, delimiter='\t')
-    y = data[:, 0]
-    U1 = data[:, 1]
-    U2 = data[:, 2]
-    return y, U1, U2
+    # Reading U file
