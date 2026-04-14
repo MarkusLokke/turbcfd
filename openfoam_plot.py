@@ -17,7 +17,7 @@ i=2 #BITCH HUSK Å ENDRE
 nu = nus[i]  # Set your kinematic viscosity value
 h  = hs[i]      # For pipes the length scale is typically your pipe diameter and half-height for channels
 
-turbulence_model = models[0]
+
 
 # Reading u_tau value
 with open(r'\\wsl$\Ubuntu\home\fermilian\turb_openfoam_V25\wallShearStress.dat', 'r') as file:
@@ -40,6 +40,8 @@ Re_tau_OpenFOAM = round((u_tau*h)/(nu),0) # https://www.cfd-online.com/Forums/ma
 
 print(Re_tau_OpenFOAM)
 
+turbulence_model = models[1]
+
 # Plotting
 plt.figure(figsize=(10, 6))
 plt.semilogx(y_plus_values_1, u_plus_values_1, marker='o', linestyle='-', label=f"OpenFOAM {turbulence_model} Re_tau = {Re_tau_OpenFOAM}")
@@ -51,13 +53,14 @@ plt.grid(True)
 
 n=0
 
+
 if n:
     data_to_save = np.column_stack((y_plus_values_1, u_plus_values_1))
-    data_filename = f'DATASET_PLOTS/dataset_OpenFOAM_{turbulence_model}_re_tau_{Re_tau_OpenFOAM}.txt'
+    data_filename = f'dataset_OpenFOAM_{turbulence_model}_re_tau_{Re_tau_OpenFOAM}.txt'
     np.savetxt(data_filename, data_to_save, header='y_plus_values_1, u_plus_values_1', fmt='%f', delimiter=', ')
 
     # Save the plot
-    filename = f'DATASET_PLOTS/comparison_plot_{turbulence_model}_re_tau_{Re_tau_OpenFOAM}.png'
+    filename = f'comparison_plot_{turbulence_model}_re_tau_{Re_tau_OpenFOAM}.png'
     plt.savefig(filename)
     plt.show()
 

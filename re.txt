@@ -2,137 +2,137 @@ DNS1000
 
     Spalart-Allmaras
 
-        U0  Re   Mesh
-        100 2493  1000
+        U0  Re    Mesh  t
+        100 2493  1000  x
         10  775
         12  849
         15  949
         16  980
-        17  1010
+        17  1010        x
 
         16  980   100
     
     k e
 
-        U0   Re    Mesh
-        1    1306  1000
+        U0   Re    Mesh  t
+        1    1306  1000  
         0.8  1101
-        0.7  995
+        0.7  995         13.85
     
     k e RNG
 
-        U0   Re    Mesh
-        0.7  962   1000
-        0.75 1014
+        U0   Re    Mesh  t
+        0.7  962   1000  
+        0.75 1014        12.47
 
     k w
 
-        U0   Re    Mesh
-        0.75 751   1000
+        U0   Re    Mesh  t
+        0.75 751   1000  13.675
         1    956
         1.1  1033
-        1.05 995
+        1.05 995         13.675
 
     k w sst
 
-       U0   Re    Mesh
-       1.05 999  1000
+       U0   Re    Mesh   t
+       1.05 999   1000   13.92
 
 
 DNS5200
 
     Spalart-Allmaras
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         1.1  642   1000
         10   1947
         100  7332
         70   5862
         60   5331
         55   5056
-        58   5222
+        58   5222        x
 
         58         500
 
     k e
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         58   77852 1000
         1    5902
         0.95 5684
         0.87 5332
         0.81 5062
-        0.85 5244
+        0.85 5244        13.785
 
     k e RNG
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         0.85 5030  1000
         1    5661
-        0.9  5242
+        0.9  5242        13.01
 
     k w
         
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         0.9  4704  1000
         1.2  6103
         0.95 4948
-        1    5191
+        1    5191        13.67
 
     k w sst
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         1    6349  1000
         0.9  6064
         0.7  6123
         0.4  2197
         0.6  3625
         0.67 5548
-        0.66 5169
+        0.66 5169        x
 
 
 EXP535
 
     Spalart-Allmaras
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         0.66 57    1000
         6    172
         60   545
-        59   540
+        59   540         x
 
     kep
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         60   4983  1000
         6    746
         5    643
         4.3  569
-        4    536
+        4    536         24.93
 
     kep RNG
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         4    594   1000
         3.9  583
         3.5  561
         3    502
         3.2  526
-        3.3  538
+        3.3  538         0.895
 
     kw 
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         3.9  408   1000
         5    458
         7    611
-        6    535
+        6    535         26.74
 
     kwsst
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         6    522   1000
-        6.1  529
+        6.1  529         22.525
 
 
 
@@ -140,37 +140,37 @@ EXP770
 
     Spalart-Allmaras
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         100  704   1000
         110  738
-        120  771
+        120  771         x
 
     k e
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         1    225   1000
         10   1140
         7    847
         6    746
         6.1  757
-        6.2  767
+        6.2  767         22.05
 
     k e RNG
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         6.2  753   1000
-        6.35 768
+        6.35 768         21.65
 
     k w
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         6.35 562   1000
         10   829
         8    684
-        9.3  779
+        9.3  779         24.405
 
     k w sst
 
-        U0   Re    Mesh
+        U0   Re    Mesh  t
         9.3  759   1000
-        9.4  766
+        9.4  766         20.92
