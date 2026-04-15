@@ -86,6 +86,57 @@ def read_wallShearStress_file(path):
 
 
 
+####################### Read k file #######################
+
+def read_k_file(path, skip_lines = 23, read_length = 1000):
+    """
+    Reads a _k_ datafile and splits creates a numpy array from file. 
+    The function requires that the elements are separated using space and not comma. 
+
+    Args:
+        path (_string_): Path is the relative path of the file you want to read and convert to a np.array
+        skip_lines (_int_): is the amount of lines to skip before adding to your dataset datset. 23 Lines by default
+        read_Length (_int_): is the length of the dataset you want to read. 1000 lines by default
+    """
+    
+    #### Creating Output and parameters ####
+    k = np.zeros( [read_length] )
+    counter = 0
+
+    with open(path, 'r') as file:
+        lines = file.readlines()
+        #### find data size ####        
+        for line in lines:
+            #### count lines and check if it should skip ####
+            counter +=1 
+            if counter <= skip_lines:
+                continue
+            elif counter > read_length + skip_lines:
+                break
+
+            #### Processing line into list ####
+            line = line.strip()
+            line = line.replace(")", "").replace('(', '')
+            lines_list = line.split() 
+            
+            #### Adding to output ####
+            k [counter - skip_lines - 1] = lines_list[0]
+    return k
+
+#### Usage Example ####
+
+# from read_of23_file import read_k_file
+# path6 = "DNS1000/kwsst/k"
+
+# k = read_k_file(path6)
+# # k = read_k_file(path3, 23, 1000) #Use when the file does not follow standard layout, I.E not: 23, 1000
+
+# print(k)
+# print(len(k))
+# print(type(k))
+
+
+
 ####################### Read U file #######################
 
 def read_U_file(path, skip_lines = 23, read_length = 1000):
@@ -178,25 +229,49 @@ def read_cfd_sim(folder_path):
     U_path = folder_path + "/U"
     U1, U2, U3 = read_U_file(U_path)
     
-    return U1, U2, U3, nut, u_tau
+    k_path = folder_path + "/k"
+    k = read_k_file(k_path)
+    return U1, U2, U3, nut, k, u_tau
     
 #### Usage Example ####
 # from read_of23_file import read_cfd_sim
 
 # folder_path = "DNS1000/kwsst"
-# U1, U2, U3, nut, u_tau = read_cfd_sim(folder_path)
+# U1, U2, U3, nut, k, u_tau = read_cfd_sim(folder_path)
 
+
+# print(" %%%%%%%%%%%%%%%%%%% Test Output %%%%%%%%%%%%%%%%%%% ")
+# print()
+
+# print("U1")
 # print(len(U1))
 # print(type(U1))
+# print()
 
+# print("U2")
 # print(len(U2))
 # print(type(U2))
+# print()
 
+# print("U3")
 # print(len(U3))
 # print(type(U3))
+# print()
 
+# print("nut")
 # print(len(nut))
 # print(type(nut))
+# print()
 
+# print("k")
+# print(len(k))
+# print(type(k))
+# print()
+
+# print("u_tau")
 # print(u_tau)
 # print(type(u_tau))
+# print()
+
+# print(" %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ")
+# print()
