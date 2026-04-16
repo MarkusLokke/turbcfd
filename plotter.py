@@ -48,12 +48,20 @@ def plotter_same_mesh(modelpaths, models, case):
      axs[1,1].setxlabel(r'$x_2^\plus$')
      axs[1,1].legend()
 
-     #room for aesthetic changes here
+     #room for aesthetic changes here, probably needed
 
-     fig.savefig(case + "_plots.py")
+     fig.savefig(case + "_grid1000_plots.svg")
      fig.show()
-     return 0
 
 
-def plotter_same_model(gridpaths, grids):
+def plotter_same_model(grid_model_paths, grids, models, case):
+
+     fig, axs = plt.subplots(len(models))
+
+     for i in len(models):
+          a = 1
+
+     fig.savefig(case + "__plots.svg")
+     fig.show()
+     fig.clear()
      return 0
