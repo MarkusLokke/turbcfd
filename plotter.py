@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from read_of23_file import read_cfd_sim
+from read_yLineUdata import read_yLineUdata
 
 def u1u1(TKE):
     return 2/3 * TKE
@@ -19,10 +20,9 @@ def plotter_same_mesh(modelpaths, models, case):
      '''
      fig, axs = plt.subplots(2,2)
      for i in range(len(modelpaths)):
-          U1, U2, U3, nut, u_tau = read_cfd_sim(modelpaths[i])
-          y = 0
-          k = 0
-
+          U1, U2, U3, nut, k, u_tau = read_cfd_sim(modelpaths[i])
+          y, a, b = read_yLineUdata(modelpaths[i] + "/yLine_U_non_uniform.xy")
+          print(np.shape(y), np.shape(nut))
           y_plus = y * u_tau/nut
 
           axs[0,0].plot(U1/u_tau, y_plus, label=models[i])
@@ -50,8 +50,15 @@ def plotter_same_mesh(modelpaths, models, case):
 
      #room for aesthetic changes here, probably needed
 
-     fig.savefig(case + "_grid1000_plots.svg")
+     fig.suptitle(case)
+     fig.savefig("grid1000_plots.svg")
      fig.show()
+
+#testing function
+
+paths_1 = ["DNS1000/kwsst"]
+models_1 = [r"k-\omega SST"]
+plotter_same_mesh(paths_1, models_1, r"$Re = 1000$")
 
 
 def plotter_same_model(grid_model_paths, grids, models, case):
