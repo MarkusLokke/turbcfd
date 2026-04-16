@@ -1,8 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from scipy.io import loadmat
+import os
+
 from read_of23_file import read_cfd_sim
 from read_yLineUdata import read_yLineUdata
+from read_reference import read_ref
+
 
 nus = [5e-5, 8e-6, 1.515e-5, 1.515e-5]
 hs  = [1.00, 1.00, 0.025000, 0.025000]
@@ -43,6 +48,12 @@ def plotter_same_mesh(modelpaths, models, refpath, case, H, nu):
 
      #printing reference data
 
+     y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
+     axs[0,0].semilogx(y_plus_ref, U_plus, label="ref", linestyle="--", color="#000000")
+     axs[0,1].semilogx(y_plus_ref, uu_plus, label="ref", linestyle="--", color="#000000")
+     axs[1,0].semilogx(y_plus_ref, vv_plus, label="ref", linestyle="--", color="#000000")
+     axs[1,1].semilogx(y_plus_ref, -uv_plus, label="ref", linestyle="--", color="#000000")
+
 
      #labels
      axs[0,0].set_ylabel(r'$U_1^\plus$')
@@ -70,8 +81,9 @@ def plotter_same_mesh(modelpaths, models, refpath, case, H, nu):
      axs[1,1].legend()
 
      #room for aesthetic changes here, probably needed
-
      fig.suptitle(case)
+     fig.set_size_inches(11.69, 8.27)
+     fig.tight_layout()
      fig.savefig("grid1000_plots.svg")
      fig.show()
 
@@ -83,7 +95,10 @@ models_1 = [r"$k$-$\epsilon$",
             r"$k$-$\omega$", 
             r"$k$-$\omega$ SST",
             ]
-ref_path_1 = "DNS_1000_DNS/1000_dataset.mat"
+
+ref_path_1 = "Reference data/DNS_1000_dataset.mat"
+data_dict = loadmat(ref_path_1)
+print(data_dict.keys())
 plotter_same_mesh(paths_1, models_1, ref_path_1, r"$Re = 1000$", 2, nus[1])
 
 
