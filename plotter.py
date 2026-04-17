@@ -104,40 +104,82 @@ models_1 = [r"$k$-$\epsilon$",
             r"$k$-$\omega$", 
             r"$k$-$\omega$ SST",
             ] #"Spalart-Allmaras"
-
 ref_path_1 = "Reference data/DNS_1000_dataset.mat"
-data_dict = loadmat(ref_path_1)
+
 #plotter_same_mesh(paths_1, models_1, ref_path_1, r"$Re = 1000$", 2, 1000, nus[0])
 
 paths_2 = ["DNS5200/kep", "DNS5200/kepRNG", "DNS5200/kw"] #"DNS5200/kwsst", "DNS5200/spalart-allmaras"
-
 ref_path_2 = "Reference data/DNS_5200_dataset.mat"
-data_dict = loadmat(ref_path_2)
 
 #plotter_same_mesh(paths_2, models_1, ref_path_2, r"$Re = 5200$", 2, 1000, nus[1])
 
 paths_3 = ["EXP535/kep", "EXP535/kepRNG", "EXP535/kw", "EXP535/kwsst"] #"EXP535/spalart-allmaras"
-
 ref_path_3 = "Reference data/EXP_535_dataset.mat"
-data_dict = loadmat(ref_path_2)
 
 #plotter_same_mesh(paths_3, models_1, ref_path_3, r"$Re = 535$", 0.05, 1000, nus[2])
 
 paths_4 = ["EXP770/kep", "EXP770/kepRNG", "EXP770/kw", "EXP770/kwsst"] #"EXP770/spalart-allmaras"
-
 ref_path_4 = "Reference data/EXP_770_dataset.mat"
-data_dict = loadmat(ref_path_2)
 
-plotter_same_mesh(paths_4, models_1, ref_path_4, r"$Re = 770$", 0.05, 1000, nus[3])
 
-def plotter_same_model(grid_model_paths, grids, models, case):
+#plotter_same_mesh(paths_4, models_1, ref_path_4, r"$Re = 770$", 0.05, 1000, nus[3])
 
-     fig, axs = plt.subplots(len(models))
+def plotter_same_model(grid_paths, grids, modelpaths, models, refpath, Re, H, nu):
 
-     for i in len(models):
-          a = 1
+     fig, axs = plt.subplots(len(models), 2)
 
-     fig.savefig(case + "__plots.svg")
+     for i in range(len(grids)):
+          if (i == len(grids) - 1):
+               y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
+
+          for j in range(len(models)):
+               print("i am here",i,j)
+
+               U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[j], length=grids[i])
+               y = np.linspace(0,H, grids[i])
+
+               y_plus = y * u_tau/nu
+
+               axs[j,0].semilogx(y_plus, U1/u_tau, label=str(grids[i]))
+
+               axs[j,1].semilogx(y_plus, -u1u2(U1, y, nut)/u_tau**2,  label=str(grids[i]))
+
+               if (i == len(grids) - 1):
+                    #modifing the looks of all graphs
+
+                    axs[j,0].set_title(models[j])
+                    axs[j,1].set_title(models[j])
+
+                    axs[j,0].set_ylabel(r'$U_1^\plus$', fontsize=11)
+                    axs[j,0].set_xlabel(r'$x_2^\plus$', fontsize=11)
+                    axs[j,0].set_xlim(10**(-2), 10**(4))
+                    axs[j,0].set_ylim(bottom=0)
+                    axs[j,0].legend(title="Gridsize")
+                    axs[j,0].grid()
+                    axs[j,0].grid(which="minor", axis="x", linestyle="--")
+
+                    axs[j,1].set_ylabel(r'$U_1^\plus$', fontsize=11)
+                    axs[j,1].set_xlabel(r'$x_2^\plus$', fontsize=11)
+                    axs[j,1].set_xlim(10**(-2), 10**(4))
+                    axs[j,1].set_ylim(bottom=0)
+                    axs[j,1].legend(title="Gridsize")
+                    axs[j,1].grid()
+                    axs[j,1].grid(which="minor", axis="x", linestyle="--")
+
+                    #plotting
+                    axs[j,0].semilogx(y_plus_ref, U_plus, label="ref", linestyle="--", color="#000000")
+                    axs[j,1].semilogx(y_plus_ref, -uv_plus, label="ref", linestyle="--", color="#000000")
+
+
+     fig.suptitle(r"Re ="+str(Re))
+     fig.set_size_inches(8.27, 11.69)
+     fig.tight_layout()
+
+     fig.savefig("Re" + str(Re) + "_vargrids_plots.svg")
      fig.show()
-     fig.clear()
      return 0
+
+grid_paths_1 = ["mesh/1000", "mesh/2000"] #"mesh/500"
+grids_1 = [1000, 2000] #500
+
+plotter_same_model(grid_paths_1, grids_1, paths_1, models_1, ref_path_1, 1000, 2, nus[0])

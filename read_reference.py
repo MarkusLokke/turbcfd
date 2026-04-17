@@ -3,7 +3,11 @@ import os
 
 def read_ref(path):
     '''
-    hm
+    Reads reference data into arrays
+    input:
+        path: filepath of reference data file
+    outputh
+        y_plus, U_plus, uu_plus
     '''
     data_dict = loadmat(path)
     y_plus = data_dict["y_plus"]
