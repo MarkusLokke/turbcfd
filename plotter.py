@@ -46,17 +46,21 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
      
           U1, U2, U3, nut, k, u_tau = read_cfd_sim(modelpaths[i])
           y = np.linspace(0,H, mesh)
-          print(np.shape(nut), np.shape(u_tau))
+          print(models[i])
 
           y_plus = y * u_tau/nu
 
-          axs[0,0].semilogx(y_plus, U1/u_tau, label=models[i])
+          if np.array_equal(k, np.zeros([mesh])):
+               axs[0,0].semilogx(y_plus, U1/u_tau, label=models[i])
 
-          axs[0,1].semilogx(y_plus, u1u1(k)/u_tau**2,  label=models[i])
+          else:
+               axs[0,0].semilogx(y_plus, U1/u_tau, label=models[i])
 
-          axs[1,0].semilogx(y_plus, u2u2(k, U2, y, nut)/u_tau**2,  label=models[i])
+               axs[0,1].semilogx(y_plus, u1u1(k)/u_tau**2,  label=models[i])
+          
+               axs[1,0].semilogx(y_plus, u2u2(k, U2, y, nut)/u_tau**2,  label=models[i])
 
-          axs[1,1].semilogx(y_plus, -u1u2(U1, y, nut)/u_tau**2,  label=models[i])
+               axs[1,1].semilogx(y_plus, -u1u2(U1, y, nut)/u_tau**2,  label=models[i])
      
           i+=1
 
@@ -105,9 +109,9 @@ models_1 = [r"$k$-$\epsilon$",
             "Spalart-Allmaras"] 
 
 #creating plots for Re=1000
-paths_1 = ["DNS1000/kep", "DNS1000/kepRNG", "DNS1000/kw", "DNS1000/kwsst"] #, "DNS1000/spalart-allmaras"
+paths_1 = ["DNS1000/kep", "DNS1000/kepRNG", "DNS1000/kw", "DNS1000/kwsst", "DNS1000/spalart-allmaras"] #
 ref_path_1 = "Reference data/DNS_1000_dataset.mat"
-#plotter_same_mesh(paths_1, models_1, ref_path_1, 1000, 2, 1000, nus[0])
+plotter_same_mesh(paths_1, models_1, ref_path_1, 1000, 2, 1000, nus[0])
 
 #creating plots for Re=5200
 paths_2 = ["DNS5200/kep", "DNS5200/kepRNG", "DNS5200/kw"] #"DNS5200/kwsst", "DNS5200/spalart-allmaras"

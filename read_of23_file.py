@@ -25,22 +25,26 @@ def read_nut_file(path, skip_lines = 23, read_length = 1000):
 
     with open(path, 'r') as file:
         lines = file.readlines()
-        #### find data size ####        
-        for line in lines:
-            #### count lines and check if it should skip ####
-            counter +=1 
-            if counter <= skip_lines:
-                continue
-            elif counter > read_length + skip_lines:
-                break
+        #### find data size ####
+        try:      
+            for line in lines:
+                #### count lines and check if it should skip ####
+                counter +=1 
+                if counter <= skip_lines:
+                    continue
+                elif counter > read_length + skip_lines:
+                    break
 
-            #### Processing line into list ####
-            line = line.strip()
-            line = line.replace(")", "").replace('(', '')
-            lines_list = line.split() 
-            
-            #### Adding to output ####
-            nu_t [counter - skip_lines - 1] = lines_list[0]
+                #### Processing line into list ####
+                line = line.strip()
+                line = line.replace(")", "").replace('(', '')
+                lines_list = line.split() 
+                
+                #### Adding to output ####
+                nu_t [counter - skip_lines - 1] = lines_list[0]
+        except ValueError:
+            nu_t = np.zeros( [read_length] )
+
     return nu_t
 
 #### Usage Example ####
