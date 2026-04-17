@@ -204,7 +204,7 @@ def read_U_file(path, skip_lines = 23, read_length = 1000):
 
 ####################### Read CFD SIM RAW DATA #######################
 
-def read_cfd_sim(folder_path):
+def read_cfd_sim(folder_path, length=1000):
     """
     U1, U2, U3, nut, u_tau = read_cfd_sim(folder_path)
     
@@ -221,16 +221,16 @@ def read_cfd_sim(folder_path):
         u_tau (_np.float_): Output value for u_tau
     """
     nut_path = folder_path + "/nut"
-    nut = read_nut_file(nut_path)
+    nut = read_nut_file(nut_path, read_length=length)
 
     tau_path = folder_path + "/wallShearStress.dat"
     u_tau = read_wallShearStress_file(tau_path)
 
     U_path = folder_path + "/U"
-    U1, U2, U3 = read_U_file(U_path)
+    U1, U2, U3 = read_U_file(U_path, read_length=length)
     
     k_path = folder_path + "/k"
-    k = read_k_file(k_path)
+    k = read_k_file(k_path, read_length=length)
     return U1, U2, U3, nut, k, u_tau
     
 #### Usage Example ####
