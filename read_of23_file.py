@@ -204,7 +204,7 @@ def read_U_file(path, skip_lines = 23, read_length = 1000):
 
 ####################### Read CFD SIM RAW DATA #######################
 
-def read_cfd_sim(folder_path):
+def read_cfd_sim(folder_path, skip_lines = 23, read_length = 1000):
     """
     U1, U2, U3, nut, u_tau = read_cfd_sim(folder_path)
     
@@ -220,17 +220,30 @@ def read_cfd_sim(folder_path):
         nut (_np.Array_): Output np.array for nut
         u_tau (_np.float_): Output value for u_tau
     """
-    nut_path = folder_path + "/nut"
-    nut = read_nut_file(nut_path)
-
-    tau_path = folder_path + "/wallShearStress.dat"
-    u_tau = read_wallShearStress_file(tau_path)
-
+    try:
+        nut_path = folder_path + "/nut"
+        nut = read_nut_file(nut_path)
+    except FileNotFoundError: 
+        print(nut_path + "not found")
+        nut = np.zeros([read_length])
+        
+    try:
+        tau_path = folder_path + "/wallShearStress.dat"
+        u_tau = read_wallShearStress_file(tau_path)
+    except FileNotFoundError: 
+        print(tau_path + "not found")
+        u_tau = np.zeros([read_length])
+        
+    try:
+        k_path = folder_path + "/k"
+        k = read_k_file(k_path)
+    except FileNotFoundError: 
+        print(k_path + "not found")
+        k = 0
+        
     U_path = folder_path + "/U"
     U1, U2, U3 = read_U_file(U_path)
-    
-    k_path = folder_path + "/k"
-    k = read_k_file(k_path)
+
     return U1, U2, U3, nut, k, u_tau
     
 #### Usage Example ####
