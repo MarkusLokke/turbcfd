@@ -50,7 +50,7 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
 
           y_plus = y * u_tau/nu
 
-          if np.array_equal(k, np.zeros([mesh])):
+          if np.array_equal(k, np.zeros_like(k)):
                axs[0,0].semilogx(y_plus, U1/u_tau, label=models[i])
 
           else:
@@ -74,6 +74,7 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
      #labels
      axs[0,0].set_ylabel(r'$U_1^\plus$', fontsize=11)
      axs[0,0].set_xlabel(r'$x_2^\plus$', fontsize=11)
+     axs[0,0].set_ylim(top = 30)
      
      axs[0,1].set_ylabel(r"$\overline{u_1' u_1'}^\plus$", fontsize=11)
      axs[0,1].set_xlabel(r'$x_2^\plus$', fontsize=11)
