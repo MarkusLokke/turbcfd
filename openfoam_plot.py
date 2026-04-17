@@ -12,7 +12,7 @@ nus = [5e-5, 8e-6, 1.515e-5, 1.515e-5]
 hs  = [1.00, 1.00, 0.025000, 0.025000]
 models = ['spalart-allmaras','kep','kepRNG','kw','kwSST']
 
-i=0 #BITCH HUSK Å ENDRE
+i=2 #BITCH HUSK Å ENDR E
 
 nu = nus[i]  # Set your kinematic viscosity value
 h  = hs[i]      # For pipes the length scale is typically your pipe diameter and half-height for channels
@@ -51,7 +51,7 @@ plt.title('Comparison of y+ vs U+')
 plt.legend()
 plt.grid(True)
 
-n=1
+n=0
 
 
 if n:
