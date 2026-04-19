@@ -147,51 +147,99 @@ def plotter_same_model(grid_paths: list[str], grids: list[int], modelpaths: list
      '''
      fig, axs = plt.subplots(len(models), 2)
 
-     for i in range(len(grids)):
-          if (i == len(grids) - 1):
-               y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
+     if len(models) == 1:
 
-          for j in range(len(models)):
+          for i in range(len(grids)):
+               if (i == len(grids) - 1):
+                    y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
 
-               U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[j], length=grids[i])
+               U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[0], length=grids[i])
                y = np.linspace(0,H, grids[i])
 
                y_plus = y * u_tau/nu
 
-               axs[j,0].semilogx(y_plus, U1/u_tau, label=str(grids[i]))
+               axs[0].semilogx(y_plus, U1/u_tau, label=str(grids[i]))
 
-               axs[j,1].semilogx(y_plus, -u1u2(U1, y, nut)/u_tau**2,  label=str(grids[i]))
+               axs[1].semilogx(y_plus, -u1u2(U1, y, nut)/u_tau**2,  label=str(grids[i]))
 
                if (i == len(grids) - 1):
-                    #modifing the looks of all graphs
-
-                    axs[j,0].set_title(models[j])
-                    axs[j,1].set_title(models[j])
-
-                    axs[j,0].set_ylabel(r'$U_1^\plus$', fontsize=11)
-                    axs[j,0].set_xlabel(r'$x_2^\plus$', fontsize=11)
-                    axs[j,0].set_xlim(10**(-2), 10**(4))
-                    axs[j,0].set_ylim(bottom=0)
-                    axs[j,0].legend(title="Gridsize")
-                    axs[j,0].grid()
-                    axs[j,0].grid(which="minor", axis="x", linestyle="--")
-
-                    axs[j,1].set_xlabel(r'$y^\plus$', fontsize=11)
-                    axs[j,1].set_ylabel(r"$- \overline{u_1' u_2'}^\plus$", fontsize=11)
-                    axs[j,1].set_xlim(10**(-2), 10**(4))
-                    axs[j,1].set_ylim(bottom=0)
-                    axs[j,1].legend(title="Gridsize")
-                    axs[j,1].grid()
-                    axs[j,1].grid(which="minor", axis="x", linestyle="--")
 
                     #plotting referance data
-                    axs[j,0].semilogx(y_plus_ref, U_plus, label="ref", linestyle="--", color="#000000")
-                    axs[j,1].semilogx(y_plus_ref, -uv_plus, label="ref", linestyle="--", color="#000000")
+                    axs[0].semilogx(y_plus_ref, U_plus, label="ref", linestyle="--", color="#000000")
+                    axs[1].semilogx(y_plus_ref, -uv_plus, label="ref", linestyle="--", color="#000000")
 
-     #making it look nice
-     fig.suptitle(r"Re ="+str(Re))
-     fig.set_size_inches(8.27, 11.69)
-     fig.tight_layout()
+                    #modifing the looks of all graphs
+                    axs[0].set_title(models[0])
+                    axs[1].set_title(models[0])
+
+                    axs[0].set_ylabel(r'$U_1^\plus$', fontsize=11)
+                    axs[0].set_xlabel(r'$x_2^\plus$', fontsize=11)
+                    axs[0].set_xlim(10**(-2), 10**(4))
+                    axs[0].set_ylim(bottom=0)
+                    axs[0].legend(title="Gridsize")
+                    axs[0].grid()
+                    axs[0].grid(which="minor", axis="x", linestyle="--")
+
+                    axs[1].set_xlabel(r'$y^\plus$', fontsize=11)
+                    axs[1].set_ylabel(r"$- \overline{u_1' u_2'}^\plus$", fontsize=11)
+                    axs[1].set_xlim(10**(-2), 10**(4))
+                    axs[1].set_ylim(bottom=0)
+                    axs[1].legend(title="Gridsize")
+                    axs[1].grid()
+                    axs[1].grid(which="minor", axis="x", linestyle="--")
+
+
+          #making it look nice
+          fig.suptitle(r"Re ="+str(Re))
+          fig.set_size_inches(8.27, 11.69/3.5)
+          fig.tight_layout()
+
+     else:
+          for i in range(len(grids)):
+               if (i == len(grids) - 1):
+                    y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
+
+               for j in range(len(models)):
+
+                    U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[j], length=grids[i])
+                    y = np.linspace(0,H, grids[i])
+
+                    y_plus = y * u_tau/nu
+
+                    axs[j,0].semilogx(y_plus, U1/u_tau, label=str(grids[i]))
+
+                    axs[j,1].semilogx(y_plus, -u1u2(U1, y, nut)/u_tau**2,  label=str(grids[i]))
+
+                    if (i == len(grids) - 1):
+
+                         #plotting referance data
+                         axs[j,0].semilogx(y_plus_ref, U_plus, label="ref", linestyle="--", color="#000000")
+                         axs[j,1].semilogx(y_plus_ref, -uv_plus, label="ref", linestyle="--", color="#000000")
+
+                         #modifing the looks of all graphs
+                         axs[j,0].set_title(models[j])
+                         axs[j,1].set_title(models[j])
+
+                         axs[j,0].set_ylabel(r'$U_1^\plus$', fontsize=11)
+                         axs[j,0].set_xlabel(r'$x_2^\plus$', fontsize=11)
+                         axs[j,0].set_xlim(10**(-2), 10**(4))
+                         axs[j,0].set_ylim(bottom=0)
+                         axs[j,0].legend(title="Gridsize")
+                         axs[j,0].grid()
+                         axs[j,0].grid(which="minor", axis="x", linestyle="--")
+
+                         axs[j,1].set_xlabel(r'$y^\plus$', fontsize=11)
+                         axs[j,1].set_ylabel(r"$- \overline{u_1' u_2'}^\plus$", fontsize=11)
+                         axs[j,1].set_xlim(10**(-2), 10**(4))
+                         axs[j,1].set_ylim(bottom=0)
+                         axs[j,1].legend(title="Gridsize")
+                         axs[j,1].grid()
+                         axs[j,1].grid(which="minor", axis="x", linestyle="--")
+
+          #making it look nice
+          fig.suptitle(r"Re ="+str(Re))
+          fig.set_size_inches(8.27, 11.69)
+          fig.tight_layout()
 
      fig.savefig("Re" + str(Re) + "_vargrids_plots.svg")
      fig.show()
@@ -203,6 +251,22 @@ models_2 = models_1 = [r"$k$-$\epsilon$",
             r"$k$-$\epsilon$ RNG",
             r"$k$-$\omega$", 
             r"$k$-$\omega$ SST"]
-grid_paths_1 = ["mesh/1000", "mesh/2000"] #"mesh/500"
-grids_1 = [1000, 2000] #500
-plotter_same_model(grid_paths_1, grids_1, paths_5, models_2, ref_path_1, 1000, 2, nus[0])
+grid_paths_1 = ["mesh/500", "mesh/1000", "mesh/2000", "mesh/4000"] #
+grids_1 = [500, 1000, 2000, 4000]
+#plotter_same_model(grid_paths_1, grids_1, paths_5, models_2, ref_path_1, 1000, 2, nus[0])
+
+#plotting for Re = 535, without kepRNG
+paths_6 = ["EXP535/kep", "EXP535/kw", "EXP535/kwsst"] #, "EXP535/kepRNG"
+models_2 = [r"$k$-$\epsilon$", 
+            r"$k$-$\omega$", 
+            r"$k$-$\omega$ SST"] #r"$k$-$\epsilon$ RNG",
+grid_paths_2 = ["mesh/500", "mesh/1000", "mesh/2000"] #"mesh/4000"
+grids_2 = [500, 1000, 2000] #4000
+#plotter_same_model(grid_paths_2, grids_2, paths_6, models_2, ref_path_3, 353, 0.05, nus[2])
+
+#plotting for Re = 535, 
+paths_7 = ["EXP535/kepRNG"]
+models_3 = [r"$k$-$\epsilon$ RNG"]
+grid_paths_3 = ["mesh/500", "mesh/1000"]
+grids_3 = [500, 1000]
+plotter_same_model(grid_paths_3, grids_3, paths_7, models_3, ref_path_3, 354, 0.05, nus[2])
