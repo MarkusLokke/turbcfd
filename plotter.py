@@ -43,10 +43,13 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
 
      i=0
      while(i<len(modelpaths)):
-     
+
           U1, U2, U3, nut, k, u_tau = read_cfd_sim(modelpaths[i])
-          y = np.linspace(0,H, mesh)
-          print(models[i])
+          U1 = U1[:int(mesh/2)]
+          U2 = U2[:int(mesh/2)]
+          U3 = U3[:int(mesh/2)]
+          nut = nut[:int(mesh/2)]
+          y = np.linspace(0,H/2, int(mesh/2))
 
           y_plus = y * u_tau/nu
 
@@ -55,6 +58,8 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
                axs[0,0].set_ylim(top = high)
 
           else:
+               k = k[:int(mesh/2)]
+
                axs[0,0].semilogx(y_plus, U1/u_tau, label=models[i])
 
                axs[0,1].semilogx(y_plus, u1u1(k)/u_tau**2,  label=models[i])
@@ -88,7 +93,7 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
      #limits, legends and grids
      for a in range(2):
           for b in range(2):
-               axs[a,b].set_xlim(10**(-2), 10**(5))
+               axs[a,b].set_xlim(10**(-2), 10**(4))
                axs[a,b].set_ylim(bottom=0)
                axs[a,b].legend(title="Model")
                axs[a,b].grid()
@@ -154,7 +159,11 @@ def plotter_same_model(grid_paths: list[str], grids: list[int], modelpaths: list
                     y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
 
                U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[0], length=grids[i])
-               y = np.linspace(0,H, grids[i])
+               U1 = U1[:int(grids[i]/2)]
+               U2 = U2[:int(grids[i]/2)]
+               U3 = U3[:int(grids[i]/2)]
+               nut = nut[:int(grids[i]/2)]
+               y = np.linspace(0,H/2, int(grids[i]/2))
 
                y_plus = y * u_tau/nu
 
@@ -202,7 +211,11 @@ def plotter_same_model(grid_paths: list[str], grids: list[int], modelpaths: list
                for j in range(len(models)):
 
                     U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[j], length=grids[i])
-                    y = np.linspace(0,H, grids[i])
+                    U1 = U1[:int(grids[i]/2)]
+                    U2 = U2[:int(grids[i]/2)]
+                    U3 = U3[:int(grids[i]/2)]
+                    nut = nut[:int(grids[i]/2)]
+                    y = np.linspace(0,H/2, int(grids[i]/2))
 
                     y_plus = y * u_tau/nu
 
@@ -262,7 +275,7 @@ models_2 = [r"$k$-$\epsilon$",
             r"$k$-$\omega$ SST"] #r"$k$-$\epsilon$ RNG",
 grid_paths_2 = ["mesh/500", "mesh/1000", "mesh/2000"] #"mesh/4000"
 grids_2 = [500, 1000, 2000] #4000
-#plotter_same_model(grid_paths_2, grids_2, paths_6, models_2, ref_path_3, 353, 0.05, nus[2])
+plotter_same_model(grid_paths_2, grids_2, paths_6, models_2, ref_path_3, 353, 0.05, nus[2])
 
 #plotting for Re = 535, 
 paths_7 = ["EXP535/kepRNG"]
