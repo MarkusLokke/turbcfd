@@ -283,3 +283,6 @@ models_3 = [r"$k$-$\epsilon$ RNG"]
 grid_paths_3 = ["mesh/500", "mesh/1000"]
 grids_3 = [500, 1000]
 plotter_same_model(grid_paths_3, grids_3, paths_7, models_3, ref_path_3, 354, 0.05, nus[2])
+
+def the_best(Re, paths, model_grid_label, grids):
+     return 0
