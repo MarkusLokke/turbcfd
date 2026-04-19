@@ -43,10 +43,13 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
 
      i=0
      while(i<len(modelpaths)):
-     
+
           U1, U2, U3, nut, k, u_tau = read_cfd_sim(modelpaths[i])
-          y = np.linspace(0,H, mesh)
-          print(models[i])
+          U1 = U1[:int(mesh/2)]
+          U2 = U2[:int(mesh/2)]
+          U3 = U3[:int(mesh/2)]
+          nut = nut[:int(mesh/2)]
+          y = np.linspace(0,H/2, int(mesh/2))
 
           y_plus = y * u_tau/nu
 
@@ -55,6 +58,8 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
                axs[0,0].set_ylim(top = high)
 
           else:
+               k = k[:int(mesh/2)]
+
                axs[0,0].semilogx(y_plus, U1/u_tau, label=models[i])
 
                axs[0,1].semilogx(y_plus, u1u1(k)/u_tau**2,  label=models[i])
@@ -88,7 +93,7 @@ def plotter_same_mesh(modelpaths: list[str], models: list[str], refpath: str, Re
      #limits, legends and grids
      for a in range(2):
           for b in range(2):
-               axs[a,b].set_xlim(10**(-2), 10**(5))
+               axs[a,b].set_xlim(10**(-2), 10**(4))
                axs[a,b].set_ylim(bottom=0)
                axs[a,b].legend(title="Model")
                axs[a,b].grid()
@@ -154,7 +159,11 @@ def plotter_same_model(grid_paths: list[str], grids: list[int], modelpaths: list
                     y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
 
                U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[0], length=grids[i])
-               y = np.linspace(0,H, grids[i])
+               U1 = U1[:int(grids[i]/2)]
+               U2 = U2[:int(grids[i]/2)]
+               U3 = U3[:int(grids[i]/2)]
+               nut = nut[:int(grids[i]/2)]
+               y = np.linspace(0,H/2, int(grids[i]/2))
 
                y_plus = y * u_tau/nu
 
@@ -202,7 +211,11 @@ def plotter_same_model(grid_paths: list[str], grids: list[int], modelpaths: list
                for j in range(len(models)):
 
                     U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[j], length=grids[i])
-                    y = np.linspace(0,H, grids[i])
+                    U1 = U1[:int(grids[i]/2)]
+                    U2 = U2[:int(grids[i]/2)]
+                    U3 = U3[:int(grids[i]/2)]
+                    nut = nut[:int(grids[i]/2)]
+                    y = np.linspace(0,H/2, int(grids[i]/2))
 
                     y_plus = y * u_tau/nu
 
@@ -247,7 +260,7 @@ def plotter_same_model(grid_paths: list[str], grids: list[int], modelpaths: list
 
 #plotting for Re = 1000
 paths_5 = ["DNS1000/kep", "DNS1000/kepRNG", "DNS1000/kw", "DNS1000/kwsst"]
-models_2 = models_1 = [r"$k$-$\epsilon$", 
+models_2 = [r"$k$-$\epsilon$", 
             r"$k$-$\epsilon$ RNG",
             r"$k$-$\omega$", 
             r"$k$-$\omega$ SST"]
@@ -257,16 +270,153 @@ grids_1 = [500, 1000, 2000, 4000]
 
 #plotting for Re = 535, without kepRNG
 paths_6 = ["EXP535/kep", "EXP535/kw", "EXP535/kwsst"] #, "EXP535/kepRNG"
-models_2 = [r"$k$-$\epsilon$", 
+models_3 = [r"$k$-$\epsilon$", 
             r"$k$-$\omega$", 
             r"$k$-$\omega$ SST"] #r"$k$-$\epsilon$ RNG",
 grid_paths_2 = ["mesh/500", "mesh/1000", "mesh/2000"] #"mesh/4000"
 grids_2 = [500, 1000, 2000] #4000
-#plotter_same_model(grid_paths_2, grids_2, paths_6, models_2, ref_path_3, 353, 0.05, nus[2])
+#plotter_same_model(grid_paths_2, grids_2, paths_6, models_3, ref_path_3, 535, 0.05, nus[2])
 
 #plotting for Re = 535, 
 paths_7 = ["EXP535/kepRNG"]
-models_3 = [r"$k$-$\epsilon$ RNG"]
+models_4 = [r"$k$-$\epsilon$ RNG"]
 grid_paths_3 = ["mesh/500", "mesh/1000"]
 grids_3 = [500, 1000]
-plotter_same_model(grid_paths_3, grids_3, paths_7, models_3, ref_path_3, 354, 0.05, nus[2])
+plotter_same_model(grid_paths_3, grids_3, paths_7, models_4, ref_path_3, 535, 0.05, nus[2])
+
+def u1u1_mesh_comp(grid_paths: list[str], grids: list[int], modelpaths: list[str], models: list[str], refpath: str, Re: int, H: float, nu: float):
+     '''
+     Creates 10 plots comparing effect of meshsize for each RANS model.
+     All plots include data from all given meshsizes 
+     as well as referance data.
+
+     input:
+     grid_paths: len>=n, list of paths to data from all for a given Re
+     grids: len=n, list of grids to plot
+     refpath: path to referance data
+     Re: reynolds number
+     H: total height of channel
+     mesh: meshsize
+     nu: viscosity
+     '''
+     fig, axs = plt.subplots(len(models))
+
+     for i in range(len(grids)):
+          print(grids[i])
+          if (i == len(grids) - 1):
+               y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
+
+          for j in range(len(models)):
+
+               U1, U2, U3, nut, k, u_tau = read_cfd_sim(grid_paths[i]+"/"+modelpaths[j], length=grids[i])
+               U1 = U1[:int(grids[i]/2)]
+               U2 = U2[:int(grids[i]/2)]
+               U3 = U3[:int(grids[i]/2)]
+               nut = nut[:int(grids[i]/2)]
+               y = np.linspace(0,H/2, int(grids[i]/2))
+
+               y_plus = y * u_tau/nu
+
+               if not np.array_equal(k, np.zeros_like(k)):
+                    k = k[:int(grids[i]/2)]
+                    axs[j].semilogx(y_plus, u1u1(k)/u_tau**2, label=str(grids[i]))
+
+               if (i == len(grids) - 1):
+
+                    #plotting referance data
+                    axs[j].semilogx(y_plus_ref, uu_plus, label=r"$\overline{u_1' u_1'}^\plus$ ref", linestyle="--", color="#000000")
+                    axs[j].semilogx(y_plus_ref, vv_plus, label=r"$\overline{u_2' u_2'}^\plus$ ref", linestyle="-.", color="#000000")
+                    #modifing the looks of all graphs
+                    axs[j].set_title(models[j])
+
+                    axs[j].set_ylabel(r"$\overline{u_1' u_1'}^\plus$", fontsize=11)
+                    axs[j].set_xlabel(r'$x_2^\plus$', fontsize=11)
+                    axs[j].set_xlim(10**(-2), 10**(4))
+                    axs[j].set_ylim(bottom=0)
+                    axs[j].legend(title="Gridsize")
+                    axs[j].grid()
+                    axs[j].grid(which="minor", axis="x", linestyle="--")
+
+     #making it look nice
+     fig.suptitle(r"Re ="+str(Re))
+     fig.set_size_inches(8.27/2, 11.69)
+     fig.tight_layout()
+
+     fig.savefig("Re" + str(Re) + "_vargrids_u1u1_plots.svg")
+     fig.show()
+     return 0
+
+#u1u1_mesh_comp(grid_paths_1, grids_1, paths_5, models_2, ref_path_1, 1000, 2, nus[0])
+
+#u1u1_mesh_comp(grid_paths_2, grids_2, paths_6, models_3, ref_path_3, 535, 0.05, nus[2])
+
+def the_best(Re, paths, model_grid_label, grids, refpath, H, nu):
+     
+     fig, axs = plt.subplots(1,2)
+
+     for i in range(len(paths)):
+          print(model_grid_label[i])
+          if (i == len(paths) - 1):
+               y_plus_ref, U_plus, uu_plus, vv_plus, uv_plus = read_ref(refpath)
+
+          U1, U2, U3, nut, k, u_tau = read_cfd_sim(paths[i], length=grids[i])
+          U1 = U1[:int(grids[i]/2)]
+          U2 = U2[:int(grids[i]/2)]
+          U3 = U3[:int(grids[i]/2)]
+          nut = nut[:int(grids[i]/2)]
+          y = np.linspace(0,H/2, int(grids[i]/2))
+
+          y_plus = y * u_tau/nu
+
+          axs[0].semilogx(y_plus, U1/u_tau, label=model_grid_label[i])
+          axs[1].semilogx(y_plus, -u1u2(U1, y, nut)/u_tau**2, label=model_grid_label[i])
+          
+          if (i == len(grids) - 1):
+
+               #plotting referance data
+               axs[0].semilogx(y_plus_ref, U_plus, label=r"ref", linestyle="--", color="#000000")
+               axs[1].semilogx(y_plus_ref, -uv_plus, label=r"ref", linestyle="--", color="#000000")
+               #modifing the looks of all graphs
+
+               axs[0].set_ylabel(r"$U_1^\plus$", fontsize=11)
+               axs[0].set_xlabel(r'$x_2^\plus$', fontsize=11)
+               axs[0].set_xlim(10**(-2), 10**(4))
+               axs[0].set_ylim(bottom=0)
+               axs[0].legend(title="Gridsize")
+               axs[0].grid()
+               axs[0].grid(which="minor", axis="x", linestyle="--")
+
+               axs[1].set_ylabel(r"$\overline{u_1' u_1'}^\plus$", fontsize=11)
+               axs[1].set_xlabel(r'$x_2^\plus$', fontsize=11)
+               axs[1].set_xlim(10**(-2), 10**(4))
+               axs[1].set_ylim(bottom=0)
+               axs[1].legend(title="Gridsize")
+               axs[1].grid()
+               axs[1].grid(which="minor", axis="x", linestyle="--")
+
+     #making it look nice
+     fig.suptitle(r"Re ="+str(Re))
+     fig.set_size_inches(8.27, 11.69/3.5)
+     fig.tight_layout()
+
+     fig.savefig("Re" + str(Re) + "_best_plots.svg")
+     fig.show()
+     return 0
+
+paths_8 = ["EXP535/kw","mesh/500/EXP535/kwsst", "EXP535/kwsst"]
+models_4 = [r"$k$-$\omega$ 1000", 
+            r"$k$-$\omega$ SST 500",
+            r"$k$-$\omega$ SST 1000"
+]
+grids_4 = [1000, 500, 1000]
+#the_best(535, paths_8, models_4, grids_4,ref_path_3, 0.05, nus[2])
+
+#kw og kwsst er best, bruker 1000 og 2000 for begge
+paths_9 = ["DNS1000/kw", "mesh/2000/DNS1000/kw",
+           "DNS1000/kwsst", "mesh/2000/DNS1000/kwsst"]
+models_5 = [r"$k$-$\omega$ 1000",
+            r"$k$-$\omega$ 2000",
+            r"$k$-$\omega$ SST 1000",
+            r"$k$-$\omega$ SST 2000"]
+grids_5 = [1000, 2000, 1000, 2000]
+#the_best(1000, paths_9, models_5, grids_5, ref_path_1, 2, nus[0])
